@@ -56,7 +56,8 @@ date_cols = ['order_approved_at', 'order_delivered_carrier_date', 'order_deliver
 # 1. حالتها delivered
 # 2. يوجد فيها على الأقل قيمة مفقودة في أي من الأعمدة الزمنية
 
-delivered_with_null = df[
+#  Changed 'df' to 'orders' to reference the correct DataFrame
+delivered_with_null = orders[
     (orders['order_status'] == 'delivered') &
     (orders[date_cols].isnull().any(axis=1))
 ]
@@ -83,6 +84,8 @@ items.tail()
 items.describe()
 
 items.info()
+
+
 
 items.duplicated().sum()
 
@@ -150,7 +153,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Assuming your DataFrame is named 'df'
+# Assuming your DataFrame is named 'items'  # Corrected the DataFrame name
 # and the column you want to analyze is 'price'
 
 # Calculate quantiles
@@ -163,7 +166,7 @@ lower_limit = Q1 - 1.5 * IQR
 upper_limit = Q3 + 1.5 * IQR
 
 # Identify outliers
-outliers = items[(items['price'] < lower_limit) | (df['price'] > upper_limit)]
+outliers = items[(items['price'] < lower_limit) | (items['price'] > upper_limit)] # Changed 'df' to 'items'
 
 # Create a box plot to visualize outliers
 plt.figure(figsize=(8, 6))
@@ -191,32 +194,32 @@ print(f"Number of outliers: {len(outliers)}")
 print(f"Lower limit: {lower_limit}")
 print(f"Upper limit: {upper_limit}")
 
-#OUTLIERS
+# OUTLIERS
 import pandas as pd
 
-# Assuming your DataFrame is named 'df'
+# Assuming your DataFrame is named 'items'
 # and the column you want to analyze is 'freight_value'
 
-# Calculate quantiles
-Q1 = items['freight_value'].quantile(0.25)
-Q3 = items['freight_value'].quantile(0.75)
-IQR = Q3 - Q1
+# Calculate quantiles for 'freight_value'
+Q1_freight = items['freight_value'].quantile(0.25)
+Q3_freight = items['freight_value'].quantile(0.75)
+IQR_freight = Q3_freight - Q1_freight
 
-# Define upper and lower bounds for outliers
-lower_limit = Q1 - 1.5 * IQR
-upper_limit = Q3 + 1.5 * IQR
+# Define upper and lower bounds for outliers in 'freight_value'
+lower_limit_freight = Q1_freight - 1.5 * IQR_freight
+upper_limit_freight = Q3_freight + 1.5 * IQR_freight
 
-# Identify outliers
-outliers = items[(items['freight_value'] < lower_limit) | (df['freight_value'] > upper_limit)]
+# Identify outliers in 'freight_value'
+outliers_freight = items[(items['freight_value'] < lower_limit_freight) | (items['freight_value'] > upper_limit_freight)]
 
-# Get unique product IDs with outliers
-products_with_outliers = outliers['product_id'].unique()
+# Get unique product IDs with outliers in 'freight_value'
+products_with_outliers_freight = outliers_freight['product_id'].unique()
 
-# Count the number of products with outliers
-num_products_with_outliers = len(products_with_outliers)
+# Count the number of products with outliers in 'freight_value'
+num_products_with_outliers_freight = len(products_with_outliers_freight)
 
-# Print the result
-print(f"Number of products with outliers in 'freight_value': {num_products_with_outliers}")
+# Print the result for 'freight_value'
+print(f"Number of products with outliers in 'freight_value': {num_products_with_outliers_freight}")
 
 import pandas as pd
 
@@ -264,11 +267,13 @@ lower_limit = Q1 - 1.5 * IQR
 upper_limit = Q3 + 1.5 * IQR
 
 # Identify outliers
-outliers = items[(df['freight_value'] < lower_limit) | (df['freight_value'] > upper_limit)]
+# Changed 'df' to 'items' to reference the correct DataFrame
+outliers = items[(items['freight_value'] < lower_limit) | (items['freight_value'] > upper_limit)]
 
 # Create a scatter plot to visualize outliers
 plt.figure(figsize=(10, 6))  # Adjust figure size if needed
-plt.scatter(items.index, df['freight_value'], color='blue', label='Normal Data', alpha=0.5) # alpha for transparency
+# Changed 'df' to 'items' to reference the correct DataFrame
+plt.scatter(items.index, items['freight_value'], color='blue', label='Normal Data', alpha=0.5) # alpha for transparency
 plt.scatter(outliers.index, outliers['freight_value'], color='red', label='Outliers', alpha=0.8)
 plt.title('Scatter Plot of Freight Value with Outliers')
 plt.xlabel('Index')
@@ -845,8 +850,6 @@ plt.title("Top 10 Product Categories with Most Products")
 plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels for better readability
 plt.tight_layout()  # Adjust layout to prevent labels from overlapping
 plt.show()
-
-
 
 """## olist_sellers_dataset"""
 
